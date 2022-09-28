@@ -1,5 +1,6 @@
 import time
 from threading import Thread
+import sqlite3
 import requests
 from lxml import html
 
@@ -12,9 +13,19 @@ for name in names:
     xPath = '//*[@id="main"]/div[1]/section/div[1]/div[2]/div/div[1]/div/div[2]/div/div/div[1]/div[1]/div/div/div/text()'
     price = tree.xpath(xPath)
     print(f'Ціна:{name}{price[2]}')
+    connect = sqlite3.connect('price_data_base.db')
+    cursor = connect.cursor()
+    cursor.execute(f'INSERT INTO items VALUES ("{name}", "{price[2]}")')
+    connect.commit()
 end = time.perf_counter()
 print(f'time without threads = {end - start:0.2f}')
 
+
+# connect = sqlite3.connect('price_data_base.db')
+# cursor = connect.cursor()
+#
+# cursor.execute('CREATE TABLE items(item text, price text)')
+# connect.commit()
 
 
 
